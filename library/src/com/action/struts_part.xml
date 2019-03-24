@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN" 
+"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.action.extension" value="action"/>
+	<!-- 修改文件临时存放的位置 -->
+	<constant name="struts.multipart.saveDir" value="g:/up"></constant>
+	<!-- 用户和书籍部分 -->
+	<package name="logindemo" extends="struts-default" namespace="/">
+	<interceptors >
+			<interceptor name="loginIntercepter" class="com.interceptor.LoginInterceptor"></interceptor>
+		</interceptors>
+		<!-- 登录 -->
+		<action name="loginAction" class="com.action.LoginAction" method="loginAction">
+			<result name="success" >
+				/login/class.jsp
+			</result>
+			<result name="input">
+				/login/login.jsp
+			</result>
+		</action>
+		<!-- 注册 -->
+		<action name="registerAction" class="com.action.RegisterAction"> 
+			<result name="input">
+				/register/register.jsp
+			</result>
+			<result name="success">
+				/register/success.jsp
+			</result>
+		</action>
+		<!-- 添加书籍 -->
+		<action name="add_books" class="com.action.BookAction" method="add_books">
+			<interceptor-ref name="loginIntercepter"/>
+			<interceptor-ref name="defaultStack"/>
+			<result name="login">
+				/login/login.jsp
+			</result>
+			<result name="success" type="chain">
+				select_books
+			</result>
+		</action>
+		<!-- 查询所有书籍 -->
+		<action name="select_books" class="com.action.BookAction" method="select_books">
+			<result name="success">
+				/login/show_all_books.jsp
+			</result>
+			<result name="input">
+				/login/success.jsp
+			</result>
+		</action>
+		<!-- 查询一本书籍 -->
+		<action name="selectbook" class="com.action.BookAction" method="select_book">
+			<result name="success">
+				/login/show_all_books.jsp
+			</result>
+			<result name="input">
+				/login/show_all_books.jsp
+			</result>
+		</action>
+		<!-- 删除书籍 -->
+		<action name="delete_book" class="com.action.BookAction" method="delete_book">
+			<result name="success" type="chain">
+				select_books
+			</result>
+			<result name="input" type="chain">
+				select_books
+			</result>
+		</action>
+		<!--修改书籍  -->
+		<action name="update_book" class="com.action.BookAction" method="update_book">
+			<result name="success" type="chain">
+				select_books
+			</result>
+			<result name="input">
+				/login/updatebook.jsp
+			</result>
+		</action>
+		<!-- 更新以后查询更的书籍 -->
+		<action name="update_select_book" class="com.action.BookAction" method="update_select_book">
+			<result name="success">
+				/login/updatebook.jsp
+			</result>
+			<result name="input">
+				/login/updatebook.jsp
+			</result>
+		</action>
+	</package>
+		<!--文件部分  -->
+	<package name="demo" extends="struts-default" namespace="/" >
+		<!-- <interceptors >
+			<interceptor name="loginIntercepter" class="com.interceptor.LoginInterceptor"></interceptor>
+		</interceptors> -->
+		<action name="addBookText" class="com.action.AddBookText" method="addBookText">
+			<interceptor-ref name="fileUpload">
+				<param name="allowedExtensions">png</param>
+				<param name="allowedTypes">
+				 image/png
+				</param>
+				<param name="maximumSize">2000000</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<!-- 设置存储路径—动态的设置Action的属性值 -->
+			<param name="savePath">f:/up</param>
+			<result name="success">
+				/login/show_all_text.jsp
+			</result>
+			<result name="input">
+				/login/addBookText.jsp
+			</result>
+		</action>
+		<action name="download" class="com.action.FileDownAction" >
+				<!-- 登陆拦截 -->
+				<!-- <interceptor-ref name="loginIntercepter"/>
+				<interceptor-ref name="defaultStack"/>  -->
+				<result name="login">
+					/login/login.jsp
+				</result>
+			<result name="success" type="stream">
+				<!-- 指定下载文件的文件类型 -->
+				<param name="contentType">${contentType}</param>
+				<!-- 指定由gettargetFile方法返回被下载文件的InputStream -->
+				<param name="inputName">targetFile</param>
+				<!-- 指定下载文件的文件名 -->
+				<param name="contentDisposition">attachment;filename=${downFileName}</param>
+				
+			</result>
+			
+		</action>
+	</package>
+</struts>

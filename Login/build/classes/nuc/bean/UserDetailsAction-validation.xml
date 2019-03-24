@@ -1,0 +1,30 @@
+ <!DOCTYPE validators PUBLIC
+  		"-//Apache Struts//XWork Validator 1.0.3//EN"
+  		"http://struts.apache.org/dtds/xwork-validator-1.0.3.dtd">
+<validators>
+<field name="username">
+<field-validator type="requiredstring">
+<param name="trim">true</param>
+<message>用户名必输输入</message>
+</field-validator>
+</field>
+<field name="age">
+<field-validator type="int">
+<param name="min">18</param>
+<param name="max">25</param>
+<message>年龄必须在18-25之间</message>
+</field-validator>
+</field>
+<field name="phone">
+<field-validator type="regex">
+<param name="regexExpression">^13[5,6,7,8,9]\d{8}$</param>
+<message>手机号必须是11位，13打头，5-9是第三位</message>
+</field-validator>
+</field>
+<field name="email">
+<field-validator type="regex">
+<param name="regexExpression">^\w+@\w+.\w+$</param>
+<message>邮箱格式不正确</message>
+</field-validator>
+</field>
+</validators>

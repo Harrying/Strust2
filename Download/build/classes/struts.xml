@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+<constant name="struts.action.extension" value="action,do,"/>
+    <package name="default" namespace="/" extends="struts-default">
+       <interceptors>
+       <interceptor name="loginInterceptor" class="nuc.interceptor.LoginInterceptor"></interceptor>
+       <interceptor name="usertypeInterterceptor" class="nuc.interceptor.UsertypeInterceptor"></interceptor>
+       <interceptor-stack name="MyInterceptor">
+       <interceptor-ref name="loginInterceptor"></interceptor-ref>
+          <interceptor-ref name="usertypeInterterceptor"></interceptor-ref>
+         <interceptor-ref name="defaultStack"></interceptor-ref>
+       </interceptor-stack>
+       </interceptors>
+       <action name="download_list" class="nuc.action.DownloadAction" method="getDownloadList">
+          <result name="listOK">/showDownloadList.jsp</result>
+         
+         <result name="input">/Login.jsp</result>
+       </action>
+       <action name="download_getFile" class="nuc.action.DownloadAction" method="downloadMethod">
+       
+          <result name="downloadOK" type="stream">
+          <param name="contentType">${contentType}</param>
+          <param name="contentDisposition">attachment;fileName="${fileName}"</param>
+          <param name="contentLength">${contentLength}</param>
+          <param name="inputName">targetFile</param>
+          <param name="bufferSize">4096</param>
+          </result>
+          <result name="input">/Login.jsp</result>
+          <interceptor-ref name="MyInterceptor"></interceptor-ref>
+         
+       </action>
+       <action name="loginAction" class="nuc.action.LoginAction" method="loginMethod">
+       <result name="loginOK">download.jsp</result>
+       <result name="input">/Login.jsp</result>
+       </action>
+    </package>
+</struts>
